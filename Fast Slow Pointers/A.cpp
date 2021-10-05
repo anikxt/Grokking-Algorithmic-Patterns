@@ -5,10 +5,17 @@
 using namespace std;
 //=======================
 
-struct Node
+class Node
 {
-    int data;
+public:
+    int data = 0;
     Node *next;
+
+    Node(int data)
+    {
+        this->data = data;
+        next = NULL;
+    }
 };
 
 bool hasCycle(Node *head)
@@ -31,26 +38,25 @@ bool hasCycle(Node *head)
 int main()
 {
     blaze;
-    Node *head = new Node;
-    Node *temp = head;
-    int n;
-    cin >> n;
-    for (int i = 0; i < n - 1; ++i)
-    {
-        int x;
-        cin >> x;
-        temp->data = x;
-        temp->next = new Node;
-        temp = temp->next;
-    }
-    int x;
-    cin >> x;
-    temp->data = x;
-    temp->next = NULL;
-
-    temp = head;
+    Node *head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head->next->next->next = new Node(4);
+    head->next->next->next->next = new Node(5);
+    head->next->next->next->next->next = new Node(6);
 
     // Case 1
+    cout << "Cycle Detected: " << (hasCycle(head) ? "Yes" : "No") << endl;
+
+    // Case 2
+    head->next->next->next->next->next = head->next->next;
+    cout << "Cycle Detected: " << (hasCycle(head) ? "Yes" : "No") << endl;
+
+    // Case 3
+    head->next->next->next->next->next = head->next->next->next;
+    cout << "Cycle Detected: " << (hasCycle(head) ? "Yes" : "No") << endl;
 
     return 0;
 }
+
+// Time Complexity - O(N) Space Complexity - O(1)

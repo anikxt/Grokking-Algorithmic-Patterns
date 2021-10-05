@@ -5,7 +5,14 @@
 using namespace std;
 //=======================
 
-// INCOMPLETE
+/* 
+Time Complexity - O(N * M * Len)
+where ‘N’ is the number of characters in the given string, ‘M’ is the total number of words, and ‘Len’ is the length of a word.
+
+Space Complexity - O(M)
+since at most, we will be storing all the words in the two HashMaps. In the worst case, we also need O(N) space for the resulting list. 
+So, the overall space complexity of the algorithm will be O(M+N).
+*/
 
 int main()
 {
@@ -13,51 +20,48 @@ int main()
     string s = "catfoxcat";
     string words[] = {"cat", "fox"};
     int n = sizeof(words) / sizeof(words[0]);
-    string f;
-    for (int i = 0; i < n; ++i)
+
+    unordered_map<string, int> wordFrequencyMap;
+    for (auto word : words)
     {
-        for (int j = 0; j < words[i].size(); ++j)
-        {
-            f.push_back(words[i][j]);
-        }
-    }
-    unordered_map<char, int> umap;
-    for (auto &it : f)
-    {
-        umap[it]++;
+        wordFrequencyMap[word]++;
     }
 
-    int sliderBegin = 0, matched = 0;
-    vector<int> v;
-    for (int sliderEnd = 0; sliderEnd < s.size(); ++sliderEnd)
+    vector<int> resultIndices;
+    int wordsCount = n, wordLength = words[0].size();
+    for (int i = 0; i <= s.size() - wordsCount * wordLength; ++i)
     {
-        if (umap.find(s[sliderEnd]) != umap.end())
+        unordered_map<string, int> wordsSeen;
+        for (int j = 0; j < wordsCount; j++)
         {
-            umap[s[sliderEnd]]--;
-            if (umap[s[sliderEnd]] >= 0)
+            int nextWordIndex = i + j * wordLength;
+
+            // get the next word from the string
+            string word = s.substr(nextWordIndex, wordLength);
+
+            if (wordFrequencyMap.find(word) == wordFrequencyMap.end()) // break if we don't need this word
             {
-                matched++;
+                break;
             }
-        }
 
-        while (matched == umap.size())
-        {
-            v.push_back(sliderBegin);
-            if (umap.find(s[sliderBegin]) != umap.end())
+            wordsSeen[word]++; // add the word to the 'wordsSeen' map
+
+            // no need to process further if the word has higher frequency than required
+            if (wordsSeen[word] > wordFrequencyMap[word])
             {
-                if (umap[s[sliderBegin]] == 0)
-                {
-                    matched--;
-                }
-                umap[s[sliderBegin]]++;
-                sliderBegin++;
+                break;
+            }
+
+            if (j + 1 == wordsCount) // store index if we have found all the words
+            {
+                resultIndices.push_back(i);
             }
         }
     }
 
-    for (int i = 0; i < v.size(); ++i)
+    for (int i = 0; i < resultIndices.size(); ++i)
     {
-        cout << v[i] << " ";
+        cout << resultIndices[i] << " ";
     }
     cout << endl;
     return 0;
